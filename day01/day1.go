@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"math"
-)
+import "fmt"
 
 func main() {
 	// test_cases := [4]string{ "1122", "1111", "1234", "91212129" }
@@ -18,8 +15,8 @@ func main() {
 	fmt.Printf("captcha_b = %v\n", captcha_b(input))
 }
 
-func atoi(v int) int {
-	return v - 48
+func atoi(v uint8) int {
+	return int(v - 48)
 }
 
 func captcha(input string) int {
@@ -27,10 +24,10 @@ func captcha(input string) int {
 
 	for i := 1; i < len(input); i++ {
 		if input[i] == input[i - 1] {
-			sum += atoi(int(input[i]))
+			sum += atoi(input[i])
 		}
 		if i == len(input) - 1 && input[i] == input[0] {
-			sum += atoi(int(input[i]))
+			sum += atoi(input[i])
 		}
 	}
 
@@ -42,9 +39,9 @@ func captcha_b(input string) int {
 	var halfDist = len(input) / 2
 
 	for i := 0; i < len(input); i++ {
-		var aheadIndex = int(math.Mod(float64(i + halfDist), float64(len(input))))
+		var aheadIndex = (i + halfDist) % len(input)
 		if input[i] == input[aheadIndex] {
-			sum += atoi(int(input[i]))
+			sum += atoi(input[i])
 		}
 	}
 
