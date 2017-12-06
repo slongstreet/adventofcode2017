@@ -3,6 +3,7 @@ package main
 import (
 	"strings"
 	"fmt"
+	"sort"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 	fmt.Printf("Test Cases:\n")
 	for key := range testCases {
 		var result string
-		if isValidPassphrase(key) == testCases[key] {
+		if isValidPassphrase(key, false) == testCases[key] {
 			result = "PASS"
 		} else {
 			result = "FAIL"
@@ -27,23 +28,34 @@ func main() {
 	fmt.Println()
 
 	var countValid = 0
+	var countValidNoAnagrams = 0
 	for _, passphrase := range strings.Split(getInput(), "\n") {
 		if passphrase == "" {
 			continue
 		}
 
-		if isValidPassphrase(passphrase) {
+		if isValidPassphrase(passphrase, false) {
 			countValid++
+		}
+		if isValidPassphrase(passphrase, true) {
+			countValidNoAnagrams++
 		}
 	}
 
 	fmt.Printf("Number of valid passphrases: %v\n", countValid)
+	fmt.Printf("Number of valid passphrases with no anagrams: %v\n", countValidNoAnagrams)
 }
 
-func isValidPassphrase(input string) bool {
+func isValidPassphrase(input string, testAnagrams bool) bool {
 	var wordMap = make(map[string]bool)
 
 	for _, word := range strings.Split(input, " ") {
+		if testAnagrams {
+			// instead of calculating all possible anagram permutations, let's just
+			// sort the characters alphabetically and check string uniqueness
+			word = sortCharactersInString(word)
+		}
+
 		if _, ok := wordMap[word]; ok {
 			return false // the word was already in the map, so not unique, and not a valid passphrase
 		}
@@ -52,6 +64,12 @@ func isValidPassphrase(input string) bool {
 	}
 
 	return true // if we got here, all words were unique, so the passphrase is valid
+}
+
+func sortCharactersInString(input string) string {
+	s := strings.Split(input, "")  // get characters in string as a string slice
+	sort.Strings(s)                    // sort the strings/characters
+	return strings.Join(s, "")     // recombine characters into result string
 }
 
 func getInput() string {
