@@ -33,18 +33,6 @@ func main() {
 	}
 }
 
-func getWeights(node *Tower) int {
-	var subTotal = node.weight
-
-	if len(node.children) > 0 {
-		for _, child := range node.children {
-			subTotal += getWeights(child)
-		}
-	}
-
-	return subTotal
-}
-
 func buildTowerMap(input string) map[string]*Tower {
 	var towerMap = make(map[string]*Tower)
 	for _, line := range strings.Split(input, "\n") {
@@ -147,6 +135,18 @@ func getChildWeightMap(node *Tower) map[*Tower]int {
 	}
 
 	return weightMap
+}
+
+func getWeights(node *Tower) int {
+	var subTotal = node.weight
+
+	if len(node.children) > 0 {
+		for _, child := range node.children {
+			subTotal += getWeights(child)
+		}
+	}
+
+	return subTotal
 }
 
 func debugPrintWeightMap(weightMap map[*Tower]int) {
